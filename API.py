@@ -15,28 +15,10 @@ import tflite_runtime.interpreter as tflite
 import boto3
 import logging
 
-
 app = FastAPI()
 
-# Configuration AWS - Assurez-vous de sécuriser vos clés d'accès
-aws_access_key_id = 'VOTRE_AWS_ACCESS_KEY_ID'
-aws_secret_access_key = 'VOTRE_AWS_SECRET_ACCESS_KEY'
-region_name = 'eu-west-1'
-
-bucket_name = 'cloud-cube-eu2'
-object_name = 'mfim54j0m0jk/public/modelLite.tflite'
+# Chemin vers le modèle à la racine du dépôt
 file_path = 'modelLite.tflite'
-
-# Créer une session boto3
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key,
-    region_name=region_name
-)
-
-# Téléchargement du modèle TensorFlow Lite depuis CloudCube
-s3.download_file(bucket_name, object_name, file_path)
 
 # Charger l'interpréteur TensorFlow Lite
 interpreter = tflite.Interpreter(model_path=file_path)
