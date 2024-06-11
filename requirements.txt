@@ -1,0 +1,15 @@
+<<<<<<< HEAD
+fastapi==0.111.0
+opencv-python==4.10.0.82
+pillow==10.1.0
+tflite-runtime
+boto3==1.34.122
+requests==2.32.3
+=======
+fastapi==0.111.0
+opencv-python==4.10.0.82
+pillow==10.1.0
+tflite-runtime
+boto3==1.34.122
+requests==2.32.3
+>>>>>>> 331956ff68ae9dcd6e5c3369e6a46a51be607fda
