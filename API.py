@@ -5,11 +5,6 @@ import io
 import os
 import cv2
 from collections import namedtuple
-os.environ["SM_FRAMEWORK"] = "tf.keras"
-import segmentation_models as sm
-sm.set_framework('tf.keras')
-from segmentation_models import FPN 
-from segmentation_models.losses import cce_dice_loss
 import tflite_runtime.interpreter as tflite
 import boto3
 import logging
@@ -85,21 +80,28 @@ id_category = { label[4] : label.category for label in labels }
 
 @app.post("/predict/")
 async def predict_mask(file: UploadFile = File(...)):
-    # Lire l'image reçue
     image = Image.open(io.BytesIO(await file.read()))
     image = np.array(image)
 
     # Redimensionner l'image pour correspondre aux dimensions d'entraînement
     resized = cv2.resize(image, (512, 256))
-    resized = np.expand_dims(resized, axis=0).astype(np.float32)
 
-    # Préparer l'entrée et effectuer une inférence
+    # Convertir l'image en float32
+    resized = resized.astype('float32')
+
+    # Ajouter une dimension supplémentaire pour correspondre à l'entrée du modèle
+    resized = np.expand_dims(resized, axis=0)
+
+    # Préparer l'entrée du modèle
     interpreter.set_tensor(input_details[0]['index'], resized)
+
+    # Exécuter le modèle
     interpreter.invoke()
 
-    # Récupérer la sortie de l'inférence
+    # Récupérer la prédiction
     mask = interpreter.get_tensor(output_details[0]['index'])
+
     mask = np.squeeze(mask)
 
-    # Convertir le masque en liste pour la réponse JSON
     return {"mask": mask.tolist()}
+
