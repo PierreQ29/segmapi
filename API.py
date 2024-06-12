@@ -6,8 +6,6 @@ import os
 import cv2
 from collections import namedtuple
 import tflite_runtime.interpreter as tflite
-import boto3
-import logging
 
 app = FastAPI()
 
@@ -104,4 +102,3 @@ async def predict_mask(file: UploadFile = File(...)):
     mask = np.squeeze(mask)
 
     return {"mask": mask.tolist()}
-
